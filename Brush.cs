@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using HandyUtilities;
 
 namespace Decal2D
@@ -9,8 +9,9 @@ namespace Decal2D
         public Texture2D editorIcon { get { return m_iconPreview; } }
         public float editorIconSize { get { return 50; } }
         public int width { get { return m_width; } }
-        public int heigth { get { return m_heigth; } }
+        public int height { get { return m_heigth; } }
         public Point[] points { get { return m_points; } }
+
         [ReadOnly]
         public float currentScale;
         [HideInInspector]
@@ -51,19 +52,35 @@ namespace Decal2D
             System.IO.File.WriteAllBytes(path, b);
         }
 
-        public void Recalculate(float scale)
-        {
-            Generate(source, scale);
-        }
-
         public Color GetColor(int i)
         {
             return m_points[i].color;
         }
 
-        public void Generate(Sprite sprite, float scale)
+        public void Rotate(float angle)
         {
-  
+            int i = 0;
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    var p = points[i];
+                    var pointX = (int) (Mathf.Cos(-angle) * x + Mathf.Sin(-angle) * y);
+                    var pointY = (int) (-Mathf.Sin(-angle) * x + Mathf.Cos(-angle) * y);
+                   // if ((pointX > -1) && (pointX < width) && (pointY > -1) && (pointY < height))
+                  //  {
+                        p.x = pointX;
+                        p.y = pointY;
+                        points[i] = p;
+                 //   }
+                    i++;
+                }
+            }
+        }
+
+        public void Generate(Sprite sprite, float scale, float angle = 0)
+        {
+           
             currentScale = scale;
             source = sprite;
             var rect = source.rect;
@@ -102,20 +119,22 @@ namespace Decal2D
                     TextureResizing.Point(tmpTexture, m_width, m_heigth);
                 else TextureResizing.Bilinear(tmpTexture, m_width, m_heigth);
             }
-            m_points = new Point[m_width * m_heigth];
-            i = 0;
+
+            List<Point> list = new List<Point>(m_width * m_heigth);
+
             for (int y = 0; y < m_heigth; y++)
             {
                 for (int x = 0; x < m_width; x++)
                 {
                     var p = tmpTexture.GetPixel(x, y);
-                    if(p.a > .1f)
+                    if(p.a > 0)
                     {
-                        m_points[i] = new Point(x, y, tmpTexture.GetPixel(x, y));
-                        i++;
+                        var point = new Point(x, y, tmpTexture.GetPixel(x, y));
+                        list.Add(point);
                     }
                 }
             }
+            m_points = list.ToArray();
 #if UNITY_EDITOR
             if (m_iconPreview != null)
             {
@@ -143,5 +162,7 @@ namespace Decal2D
             }
         }
     }
+
+    
 
 }

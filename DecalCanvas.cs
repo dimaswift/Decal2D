@@ -10,11 +10,7 @@ namespace Decal2D
         protected Material m_decalMaterial;
         [SerializeField]
         bool m_loadOnAwake = true;
-        [SerializeField]
-        bool m_setDirtyOnLoad = true;
-        [SerializeField]
-        protected bool m_useMaterialPool = false;
-        [SerializeField]
+
         protected bool m_dirty = false;
 
         [HideInInspector]
@@ -22,14 +18,15 @@ namespace Decal2D
         protected Texture2D m_decal;
         Transform m_transform;
         Color32[] m_defaultColors;
+        bool m_initialized;
 
         public const string DECAL_PROP_NAME = "_DecalTex";
         public abstract Renderer canvasRenderer { get; }
-        public virtual Vector2 uvOffset { get { return Vector2.zero; } }
         public abstract Bounds meshBounds { get; }
         public bool dirty { get { return m_dirty; } }
         public Transform cachedTransform { get { return m_transform; } }
         public Texture2D decal { get { return m_decal; } }
+
 
         public Material decalMaterial
         {
@@ -45,19 +42,15 @@ namespace Decal2D
 
         public virtual void Init()
         {
+            if (m_initialized)
+                return;
             m_transform = transform;
             if(Application.isPlaying)
             {
-                if(m_useMaterialPool)
-                {
-                    DecalPool.instance.RegisterDecal(this);
-                }
+                DecalPool.instance.RegisterDecal(this);
                 m_defaultColors = m_decal.GetPixels32();
-                if(m_setDirtyOnLoad)
-                {
-                    SetDirty();
-                }
             }
+            m_initialized = true;
         }
 
         public void SetDecal(Texture2D decal)
@@ -73,6 +66,12 @@ namespace Decal2D
 
         public virtual void SetDirty()
         {
+            if (m_dirty) return;
+            bool isDirty = false;
+            m_decalMaterial = DecalPool.instance.PickMaterial(this, out isDirty);
+            m_decal = m_decalMaterial.GetTexture(DECAL_PROP_NAME) as Texture2D;
+            if (isDirty)
+                Clear();
             m_dirty = true;
             canvasRenderer.sharedMaterial = m_decalMaterial;
         }
@@ -88,7 +87,7 @@ namespace Decal2D
             var decalWidth = m_decal.width;
             var decalHeight = m_decal.height;
             var brushWidth = brush.width;
-            var brushHeigth = brush.heigth;
+            var brushHeigth = brush.height;
             var uv = new Vector2();
 
           

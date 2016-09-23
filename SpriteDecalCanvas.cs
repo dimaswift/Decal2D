@@ -16,15 +16,6 @@ namespace Decal2D
         [HideInInspector]
         float m_actualDecalSize = 0;
         SpriteRenderer m_spriteRenderer;
-        Vector2 m_uvOffset;
-
-        public sealed override Vector2 uvOffset
-        {
-            get
-            {
-                return m_uvOffset;
-            }
-        }
 
         public float decalSize
         {
@@ -59,15 +50,12 @@ namespace Decal2D
         public override void Init()
         {
             m_spriteRenderer = GetComponent<SpriteRenderer>();
-            if (m_spriteRenderer.sharedMaterial != null && m_spriteRenderer.sharedMaterial.HasProperty(DECAL_PROP_NAME))
-                m_decal = m_spriteRenderer.sharedMaterial.GetTexture(DECAL_PROP_NAME) as Texture2D;
             base.Init();
-          
         }
 
         void CalculateUVOffset()
         {
-            var sprite = GetComponent<SpriteRenderer>().sprite;
+            var sprite = m_spriteRenderer.sprite;
             var offset = new Vector2();
             var scale = new Vector2();
             var textureSize = new Vector2(sprite.texture.width, sprite.texture.height);
@@ -104,30 +92,8 @@ namespace Decal2D
         public override void SetDirty()
         {
             if (m_dirty) return;
-        
-            if (Application.isPlaying)
-            {
-                if(m_useMaterialPool)
-                {
-                    bool isDirty = false;
-                    m_decalMaterial = DecalPool.instance.PickMaterial(this, out isDirty);
-                    m_decal = m_decalMaterial.GetTexture(DECAL_PROP_NAME) as Texture2D;
-                    if (isDirty)
-                        Clear();
-                }
-                else
-                {
-                    if (m_decalMaterial != null)
-                    {
-                        m_decalMaterial = Instantiate(m_decalMaterial);
-                        m_decal = Instantiate(m_decal);
-                        m_decalMaterial.SetTexture(DECAL_PROP_NAME, m_decal);
-                    }
-                    else return;
-                }
-                CalculateUVOffset();
-            }
             base.SetDirty();
+            CalculateUVOffset();
         }
 
     }

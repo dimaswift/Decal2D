@@ -20,7 +20,7 @@ namespace Decal2D
             {
                 if (GUILayout.Button("Rescale"))
                 {
-                    brush.Generate(brush.source, brush.scale);
+                    brush.Generate(brush.source, brush.scale, 45);
                     EditorUtility.SetDirty(brush);
                 }
             }
