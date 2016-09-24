@@ -76,37 +76,46 @@ namespace Decal2D
             canvasRenderer.sharedMaterial = m_decalMaterial;
         }
 
-        public void PlaceBrush(Brush brush, Vector2 localPoint, float lerp = 1f)
+        protected virtual Vector2 GetUV(Vector2 localPoint, Brush brush)
         {
             var bounds = meshBounds;
+            var uv = new Vector2();
+            var zeroUV = bounds.center - bounds.extents;
+            uv.x = Helper.Remap(localPoint.x, zeroUV.x, zeroUV.x + bounds.size.x, 0f, 1f);
+            uv.y = Helper.Remap(localPoint.y, zeroUV.y, zeroUV.y + bounds.size.y, 0f, 1f);
+            return uv;
+        }
+
+        public void PlaceBrush(Brush brush, Vector2 point, float lerp = 1f, Color color = default(Color))
+        {
+            var localPoint = cachedTransform.InverseTransformPoint(point);
+            var bounds = meshBounds;
+            localPoint.z = 0;
             if (!bounds.Contains(localPoint))
                 return;
             if (!dirty)
                 SetDirty();
-
             var decalWidth = m_decal.width;
             var decalHeight = m_decal.height;
-            var brushWidth = brush.width;
-            var brushHeigth = brush.height;
-            var uv = new Vector2();
-
-          
-            var zeroUV = bounds.center - bounds.extents;
-            uv.x = Helper.Remap(localPoint.x, zeroUV.x, zeroUV.x + bounds.size.x, 0f, 1f);
-            uv.y = Helper.Remap(localPoint.y, zeroUV.y, zeroUV.y + bounds.size.y, 0f, 1f);
+            var b = brush.GetBrush(gameObject.tag);
+            var brushWidth = b.width;
+            var brushHeigth = b.height;
+            var uv = GetUV(localPoint, b);
 
             var xStart = (int) ((uv.x * decalWidth) - (brushWidth * .5f));
-            var yStart = (int) ((uv.y * decalHeight) -(brushHeigth * .5f));
+            var yStart = (int) ((uv.y * decalHeight) - (brushHeigth * .5f));
 
-            var pixelCount = brush.points.Length;
-
+            var pixelCount = b.points.Length;
+            bool replaceColor = color != default(Color);
             for (int i = 0; i < pixelCount; i++)
             {
-                var p = brush.points[i];
+                var p = b.points[i];
                 var x = xStart + p.x;
                 var y = yStart + p.y;
                 var old = m_decal.GetPixel(x, y);
-                var c = Color.Lerp(old, p.color, lerp * p.color.a);
+                if(replaceColor)
+                    color.a = p.color.a;
+                var c = Color.Lerp(old, replaceColor ? color : p.color, lerp * p.color.a);
                 if (p.color.a < .3f)
                     c = old;
                 c.a += old.a * 2;
@@ -115,6 +124,7 @@ namespace Decal2D
 
             m_decal.Apply();
         }
+      
     }
 
 }

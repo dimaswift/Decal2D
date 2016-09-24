@@ -64,6 +64,7 @@ namespace Decal2D
         void RescaleDecal()
         {
             var sprite = canvas.GetComponent<SpriteRenderer>().sprite;
+          
             TextureResizing.Bilinear(canvas.decal, sprite.rect.width * canvas.decalSize, sprite.rect.height * canvas.decalSize);
             var decalPath = AssetDatabase.GetAssetPath(canvas.decal);
             System.IO.File.WriteAllBytes(Helper.ConvertToAbsolutePath(decalPath), canvas.decal.EncodeToPNG());

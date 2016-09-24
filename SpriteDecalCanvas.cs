@@ -53,6 +53,15 @@ namespace Decal2D
             base.Init();
         }
 
+        protected override Vector2 GetUV(Vector2 localPoint, Brush brush)
+        {
+            if (m_spriteRenderer.flipX)
+                localPoint = localPoint.Flip(Vector2.left);
+            if (m_spriteRenderer.flipY)
+                localPoint = localPoint.Flip(Vector2.up);
+            return base.GetUV(localPoint, brush);
+        }
+
         void CalculateUVOffset()
         {
             var sprite = m_spriteRenderer.sprite;
@@ -66,6 +75,7 @@ namespace Decal2D
             offset.y = -sprite.rect.y;
             offset.x = Helper.Remap(offset.x, 0, sprite.rect.width, 0f, 1f);
             offset.y = Helper.Remap(offset.y, 0, sprite.rect.height, 0f, 1f);
+
             decalMaterial.SetTextureOffset(DECAL_PROP_NAME, offset);
             decalMaterial.SetTextureScale(DECAL_PROP_NAME, scale);
         }
@@ -81,7 +91,7 @@ namespace Decal2D
         {
             if (Input.GetMouseButton(0))
             {
-                PlaceBrush(brush, cachedTransform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)), 1);
+         //       PlaceBrush(brush, cachedTransform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)), 1);
             }
             if (Input.GetKeyDown(KeyCode.Space))
             {
