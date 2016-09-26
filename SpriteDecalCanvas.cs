@@ -5,7 +5,7 @@ using HandyUtilities;
 namespace Decal2D
 {
     [RequireComponent(typeof(SpriteRenderer))]
-    public class SpriteDecalCanvas : DecalCanvas
+    public class SpriteDecalCanvas : DecalCanvas, ICanvas
     {
         public Brush brush;
 
@@ -16,6 +16,8 @@ namespace Decal2D
         [HideInInspector]
         float m_actualDecalSize = 0;
         SpriteRenderer m_spriteRenderer;
+
+        public DecalCanvas canvas { get { return this; } }
 
         public float decalSize
         {
@@ -103,6 +105,7 @@ namespace Decal2D
         {
             if (m_dirty) return;
             base.SetDirty();
+            decalMaterial.color = m_spriteRenderer.color;
             CalculateUVOffset();
         }
 

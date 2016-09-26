@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Decal2D
 {
     [CreateAssetMenu(fileName ="tagBindBrush", menuName ="Decal2D/Tag Bind Brush", order = 3)]
-    public class TagBindBrush : BrushSet<TagBrushBinding>, ICustomEditorIconDrawer
+    public sealed class TagBindBrush : BrushSet<TagBrushBinding>, ICustomEditorIconDrawer
     {
         [SerializeField]
         List<TagBrushBinding> m_brushes = new List<TagBrushBinding>();
@@ -25,7 +25,17 @@ namespace Decal2D
             else return new TagBrushBinding() { tag = "Default" };
         }
 
-        public override SingleBrush GetBrush(string tag)
+        public override SingleBrush GetBrush()
+        {
+            return m_brushes[0].brush.GetBrush();
+        }
+
+        public override SingleBrush GetBrush(float angle, int order)
+        {
+            return m_brushes[0].brush.GetBrush(angle, order);
+        }
+
+        public override SingleBrush GetBrush(string tag, float angle, int order)
         {
             var count = brushes.Count;
             for (int i = 0; i < count; i++)
@@ -33,10 +43,20 @@ namespace Decal2D
                 TagBrushBinding b = m_brushes[i];
                 if (b.tag == tag)
                 {
-                    return b.brush.GetBrush();
+                    return b.brush.GetBrush(angle, order);
                 }
             }
-            return GetBrush();
+            return GetBrush(order);
+        }
+
+        public override SingleBrush GetBrush(int order)
+        {
+            return m_brushes[0].brush.GetBrush(order);
+        }
+
+        public override SingleBrush GetBrush(string tag, int order)
+        {
+             return this.GetBrush(tag, order, 0);
         }
 
     }

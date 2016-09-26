@@ -5,11 +5,12 @@ using HandyUtilities;
 namespace Decal2D
 {
     [CreateAssetMenu(fileName ="Single Brush", menuName = "Decal2D/Single Brush", order = 0)]
-    public class SingleBrush : Brush, ICustomEditorIcon
+    public sealed class SingleBrush : Brush, ICustomEditorIcon
     {
         public int width { get { return m_width; } }
         public int height { get { return m_heigth; } }
         public Point[] points { get { return m_points; } }
+      
 
         [ReadOnly]
         public float currentScale;
@@ -25,6 +26,12 @@ namespace Decal2D
         Texture2D m_iconPreview;
         [HideInInspector]
         public float scale = 1f;
+        [SerializeField]
+        Color m_color = Color.white;
+        [SerializeField]
+        Effect m_effect;
+
+
 
         public string GetInfo()
         {
@@ -40,6 +47,24 @@ namespace Decal2D
         }
 
         public float editorIconSize { get { return 50; } }
+
+        public Color color
+        {
+            get { return m_color; }
+            set { m_color = value; }
+        }
+
+        public Effect effect
+        {
+            get
+            {
+                return m_effect;
+            }
+            set
+            {
+                m_effect = value;
+            }
+        }
 
         public Texture2D iconPreview { get { return m_iconPreview; } }
 
@@ -58,13 +83,35 @@ namespace Decal2D
             return t;
         }
 
-        public sealed override SingleBrush GetBrush(string tag) { return this; }
+        public override SingleBrush GetBrushSafe()
+        {
+            return this;
+        }
 
-        public sealed override SingleBrush GetBrush(float angle) { return this; }
+        public override SingleBrush GetBrush()
+        {
+            return this;
+        }
 
-        public sealed override SingleBrush GetBrush(string tag, float angle) { return this; }
+        public override SingleBrush GetBrush(string tag, int order)
+        {
+            return this;
+        }
 
-        public sealed override SingleBrush GetBrush() { return this; }
+        public override SingleBrush GetBrush(float angle, int order)
+        {
+            return this;
+        }
+
+        public override SingleBrush GetBrush(string tag, float angle, int order)
+        {
+            return this;
+        }
+
+        public override SingleBrush GetBrush(int order)
+        {
+            return this;
+        }
 
         public void SaveTexture(string path)
         {

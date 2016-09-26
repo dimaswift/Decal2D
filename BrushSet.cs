@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using HandyUtilities;
-
 using System.Collections;
-
 
 namespace Decal2D
 {
@@ -39,32 +37,21 @@ namespace Decal2D
             }
         }
 
+        public override SingleBrush GetBrushSafe()
+        {
+            if (brushes.Count == 0) return null;
+            var b = brushes[0];
+            if (b == null) return null;
+            if (b.brush == null) return null;
+            return b.brush.GetBrushSafe();
+        }
+
         public abstract T CreateBrush();
-
-        public override SingleBrush GetBrush()
-        { 
-            return brushes.Count > 0 && brushes[0].brush != null ? brushes[0].brush.GetBrush() : null;
-        }
-
-        public override SingleBrush GetBrush(float angle)
-        {
-            return brushes.Count > 0 && brushes[0].brush != null ? brushes[0].brush.GetBrush(angle) : null;
-        }
-
-        public override SingleBrush GetBrush(string tag, float angle)
-        {
-            return brushes.Count > 0 && brushes[0].brush != null ? brushes[0].brush.GetBrush(tag, angle) : null;
-        }
-
-        public override SingleBrush GetBrush(string tag)
-        {
-            return brushes.Count > 0 && brushes[0].brush != null ? brushes[0].brush.GetBrush(tag) : null;
-        }
 
         Texture2D GetIcon(T c)
         {
             if (c == null || c.brush == null) return null;
-            var b = c.brush.GetBrush();
+            var b = c.brush.GetBrushSafe();
             return b != null ? b.editorIcon : null;
         }
 

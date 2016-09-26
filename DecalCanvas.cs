@@ -97,7 +97,7 @@ namespace Decal2D
                 SetDirty();
             var decalWidth = m_decal.width;
             var decalHeight = m_decal.height;
-            var b = brush.GetBrush(gameObject.tag);
+            var b = brush.GetBrush(gameObject.tag, 0);
             var brushWidth = b.width;
             var brushHeigth = b.height;
             var uv = GetUV(localPoint, b);

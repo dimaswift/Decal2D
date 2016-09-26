@@ -6,9 +6,9 @@ using HandyUtilities;
 namespace Decal2D
 {
     [CustomEditor(typeof(RandomBrushSet))]
-    public class RandomBrushSetEditor : BrushSetEditor<BrushContainer>
+    public class RandomBrushSetEditor : BrushSetEditor<SingleBrushBinding>
     {
-        public override BrushSet<BrushContainer> brushSet
+        public override BrushSet<SingleBrushBinding> brushSet
         {
             get
             {

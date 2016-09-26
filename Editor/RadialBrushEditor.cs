@@ -26,23 +26,11 @@ namespace Decal2D
             }
         }
 
-
-        public override void OnInspectorGUI()
+        protected override string headerName
         {
-            base.OnInspectorGUI();
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("m_sprite"));
-            
-            if(radialBrush.sprite)
+            get
             {
-                if (GUILayout.Button("Generate"))
-                {
-                    Screen.SetResolution(100, 100, false);
-                } 
-            }
-            if(GUI.changed)
-            {
-                serializedObject.ApplyModifiedProperties();
-                EditorUtility.SetDirty(target);
+                return "Radial brushes";
             }
         }
 

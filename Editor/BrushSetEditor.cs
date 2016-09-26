@@ -39,7 +39,7 @@ namespace Decal2D
             DoLayoutList();
             if(reorderableList.index >= 0 && reorderableList.index < brushSet.brushes.Count && brushSet.brushes[reorderableList.index].brush != null)
             {
-                SingleBrushEditor.DrawBrushLayout(brushSet.brushes[reorderableList.index].brush.GetBrush());
+                SingleBrushEditor.DrawBrushLayout(brushSet.brushes[reorderableList.index].brush);
             }
         }
 
@@ -52,7 +52,7 @@ namespace Decal2D
         {
             if(brush)
             {
-                var single = brush.GetBrush();
+                var single = brush.GetBrushSafe();
                 if (single != null)
                 {
                     var brushIconAspect = single.iconPreview.width / single.iconPreview.height;
@@ -73,8 +73,8 @@ namespace Decal2D
                 
                 brushSet.brushes[index].brush = EditorGUI.ObjectField(new Rect(rect.x + 45, rect.y + 5, 200, 16),
                              brushSet.brushes[index].brush,
-                            typeof(SingleBrush),
-                            false) as SingleBrush;
+                            typeof(Brush),
+                            false) as Brush;
 
                 DrawIconInCorner(rect, bind.brush);
                 if (GUI.changed)
