@@ -43,7 +43,7 @@ namespace Decal2D
         {
             if(Input.GetMouseButton(0))
             {
-                PlaceBrush(brush, cachedTransform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)), 1);
+            //    PlaceBrush(brush, cachedTransform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)), 1);
             }
             if (Input.GetKeyDown(KeyCode.Space))
             {

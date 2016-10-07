@@ -5,6 +5,7 @@ namespace Decal2D
     [CreateAssetMenu(fileName ="effectPool", menuName = "Decal2D/Effects/Effect Pool")]
     public class EffectPool : ScriptableObject
     {
+
         public int capacity = 10;
         public float rate = .1f;
         public float duration = 3f;
@@ -20,6 +21,7 @@ namespace Decal2D
     
         public bool Init()
         {
+            if (m_inited) return false;
             if (particleSystemPrefabs.Length == 0 || capacity <= 0)
             {
                 m_inited = false;

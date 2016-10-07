@@ -16,7 +16,7 @@ namespace Decal2D
         [HideInInspector]
         float m_actualDecalSize = 0;
         SpriteRenderer m_spriteRenderer;
-
+        bool m_offsetCalculated;
         public DecalCanvas canvas { get { return this; } }
 
         public float decalSize
@@ -80,6 +80,7 @@ namespace Decal2D
 
             decalMaterial.SetTextureOffset(DECAL_PROP_NAME, offset);
             decalMaterial.SetTextureScale(DECAL_PROP_NAME, scale);
+            m_offsetCalculated = true;
         }
 
         public void RescaleDecal(Texture2D newDecal)
@@ -89,24 +90,14 @@ namespace Decal2D
             decalMaterial.SetTexture(DECAL_PROP_NAME, newDecal);
         }
 
-        void Update()
-        {
-            if (Input.GetMouseButton(0))
-            {
-         //       PlaceBrush(brush, cachedTransform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)), 1);
-            }
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                Clear();
-            }
-        }
-
         public override void SetDirty()
         {
-            if (m_dirty) return;
             base.SetDirty();
-            decalMaterial.color = m_spriteRenderer.color;
-            CalculateUVOffset();
+            if(!m_offsetCalculated)
+            {
+                CalculateUVOffset();
+                decalMaterial.color = m_spriteRenderer.color;
+            }
         }
 
     }
